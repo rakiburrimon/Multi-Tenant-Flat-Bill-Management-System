@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // role: admin (super admin) or owner (house owner)
+            $table->enum('role', ['admin', 'owner'])->default('owner')->index();
             $table->rememberToken();
             $table->timestamps();
         });
