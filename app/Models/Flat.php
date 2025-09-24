@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
+class Flat extends Model
+{
+    /** @use HasFactory<\Database\Factories\FlatFactory> */
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'building_id',
+        'number',
+        'floor',
+        'size',
+        'bedrooms',
+        'bathrooms',
+        'rent',
+        'status',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
+     * Get the building that owns the flat.
+     */
+    public function building(): BelongsTo
+    {
+        return $this->belongsTo(Building::class);
+    }
+
+    /**
+     * Get the owner of the flat.
+     */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'house_owner_id');
+    }
+
+    /**
+     * Get the tenants for the flat.
+     */
+    public function tenants(): HasMany
+    {
+        return $this->hasMany(Tenant::class);
+    }
+
+    /**
+     * Get the bills for the flat.
+     */
+    public function bills(): HasMany
+    {
+        return $this->hasMany(Bill::class);
+    }
+
+    /**
+     * Get the bill categories associated with the flat through bills.
+     */
+    public function categories(): HasManyThrough
+    {
+        return $this->hasManyThrough(BillCategory::class, Bill::class, 'flat_id', 'id', 'id', 'bill_category_id');
+    }
+}
