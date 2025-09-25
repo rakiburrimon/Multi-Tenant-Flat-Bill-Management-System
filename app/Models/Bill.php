@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class Bill extends Model
 {
@@ -20,11 +21,12 @@ class Bill extends Model
         'house_owner_id',
         'flat_id',
         'tenant_id',
-        'bill_category_id',
+        'category_id',
         'amount',
         'due_date',
         'status',
-        'description',
+        'paid_at',
+        'remarks',
     ];
 
     /**
@@ -70,5 +72,30 @@ class Bill extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(BillCategory::class, 'category_id');
+    }
+
+    /**
+     * Scope: limit bills to an owner.
+     */
+    public function scopeForOwner(Builder $query, int $ownerId): Builder
+    {
+        return $query->where('house_owner_id', $ownerId);
+    }
+
+    /**
+     * Scope: unpaid bills.
+     */
+    public function scopeUnpaid(Builder $query): Builder
+    {
+        return $query->where('status', 'unpaid');
+    }
+
+    /**
+     * Scope: overdue bills (due_date in the past and not paid).
+     */
+    public function scopeOverdue(Builder $query): Builder
+    {
+        $today = (new \DateTime('today'))->format('Y-m-d');
+        return $query->where('status', '!=', 'paid')->where('due_date', '<', $today);
     }
 }

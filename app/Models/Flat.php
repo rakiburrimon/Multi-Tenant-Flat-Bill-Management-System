@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Builder;
 
 class Flat extends Model
 {
@@ -20,13 +21,10 @@ class Flat extends Model
      */
     protected $fillable = [
         'building_id',
+        'house_owner_id',
         'number',
         'floor',
-        'size',
-        'bedrooms',
-        'bathrooms',
-        'rent',
-        'status',
+        'description',
     ];
 
     /**
@@ -77,5 +75,21 @@ class Flat extends Model
     public function categories(): HasManyThrough
     {
         return $this->hasManyThrough(BillCategory::class, Bill::class, 'flat_id', 'id', 'id', 'bill_category_id');
+    }
+
+    /**
+     * Scope: limit flats to an owner.
+     */
+    public function scopeForOwner(Builder $query, int $ownerId): Builder
+    {
+        return $query->where('house_owner_id', $ownerId);
+    }
+
+    /**
+     * Scope: in a building.
+     */
+    public function scopeInBuilding(Builder $query, int $buildingId): Builder
+    {
+        return $query->where('building_id', $buildingId);
     }
 }

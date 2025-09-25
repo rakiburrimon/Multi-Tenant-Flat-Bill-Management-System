@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Builder;
 
 class Tenant extends Model
 {
@@ -19,13 +20,13 @@ class Tenant extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'house_owner_id',
         'flat_id',
         'name',
         'email',
         'phone',
-        'move_in_date',
-        'move_out_date',
-        'status',
+        'lease_start',
+        'lease_end',
     ];
 
     /**
@@ -34,8 +35,8 @@ class Tenant extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'move_in_date' => 'date',
-        'move_out_date' => 'date',
+        'lease_start' => 'date',
+        'lease_end' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -70,5 +71,13 @@ class Tenant extends Model
     public function categories(): HasManyThrough
     {
         return $this->hasManyThrough(BillCategory::class, Bill::class, 'tenant_id', 'id', 'id', 'bill_category_id');
+    }
+
+    /**
+     * Scope: limit tenants to an owner.
+     */
+    public function scopeForOwner(Builder $query, int $ownerId): Builder
+    {
+        return $query->where('house_owner_id', $ownerId);
     }
 }

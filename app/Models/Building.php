@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Builder;
 
 class Building extends Model
 {
@@ -74,5 +75,13 @@ class Building extends Model
     public function categories(): HasManyThrough
     {
         return $this->hasManyThrough(BillCategory::class, Bill::class, 'flat_id', 'id', 'id', 'bill_category_id');
+    }
+
+    /**
+     * Scope: records for a specific house owner.
+     */
+    public function scopeForOwner(Builder $query, int $ownerId): Builder
+    {
+        return $query->where('house_owner_id', $ownerId);
     }
 }

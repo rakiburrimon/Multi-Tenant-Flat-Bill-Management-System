@@ -36,6 +36,6 @@ class BillCategory extends Model
      */
     public function bills(): HasMany
     {
-        return $this->hasMany(Bill::class, 'bill_category_id');
+        return $this->hasMany(Bill::class, 'category_id');
     }
 }
