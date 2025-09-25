@@ -12,30 +12,30 @@ class BillCategoryController extends Controller
     /**
      * Controller method usage
      */
-    public function index(): Response
+    public function index()
     {
-        $categories = BillCategory::query()->orderBy('name')->get();
-        return response($categories);
+        $categories = BillCategory::query()->orderBy('name')->paginate(20);
+        return view('owner.categories.index', compact('categories'));
     }
 
     /**
      * Controller method usage
      */
-    public function store(Request $request): Response
+    public function store(Request $request)
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:100', 'unique:bill_categories,name'],
             'description' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $category = BillCategory::query()->create($data);
-        return response($category, 201);
+        BillCategory::query()->create($data);
+        return redirect()->route('owner.categories.index')->with('status', 'Category created');
     }
 
     /**
      * Controller method usage
      */
-    public function update(Request $request, BillCategory $category): Response
+    public function update(Request $request, BillCategory $category)
     {
         $data = $request->validate([
             'name' => ['sometimes', 'string', 'max:100', 'unique:bill_categories,name,' . $category->id],
@@ -43,16 +43,32 @@ class BillCategoryController extends Controller
         ]);
 
         $category->update($data);
-        return response($category);
+        return redirect()->route('owner.categories.index')->with('status', 'Category updated');
     }
 
     /**
      * Controller method usage
      */
-    public function destroy(BillCategory $category): Response
+    public function destroy(BillCategory $category)
     {
         $category->delete();
-        return response(null, 204);
+        return redirect()->route('owner.categories.index')->with('status', 'Category deleted');
+    }
+
+    /**
+     * Controller method usage
+     */
+    public function create()
+    {
+        return view('owner.categories.create');
+    }
+
+    /**
+     * Controller method usage
+     */
+    public function edit(BillCategory $category)
+    {
+        return view('owner.categories.edit', compact('category'));
     }
 }
 

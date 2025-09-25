@@ -13,24 +13,24 @@ class TenantController extends Controller
     /**
      * Controller method usage
      */
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
         $tenants = Tenant::query()->paginate(20);
-        return response($tenants);
+        return view('admin.tenants.index', compact('tenants'));
     }
 
     /**
      * Controller method usage
      */
-    public function show(Tenant $tenant): Response
+    public function show(Tenant $tenant)
     {
-        return response($tenant);
+        return view('admin.tenants.show', compact('tenant'));
     }
 
     /**
      * Controller method usage
      */
-    public function store(Request $request): Response
+    public function store(Request $request)
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -48,13 +48,13 @@ class TenantController extends Controller
             'flat_id' => $data['flat_id'],
         ]);
 
-        return response($tenant, 201);
+        return redirect()->route('admin.tenants.index')->with('status', 'Tenant created');
     }
 
     /**
      * Controller method usage
      */
-    public function update(Request $request, Tenant $tenant): Response
+    public function update(Request $request, Tenant $tenant)
     {
         $data = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
@@ -63,26 +63,42 @@ class TenantController extends Controller
         ]);
 
         $tenant->update($data);
-        return response($tenant);
+        return redirect()->route('admin.tenants.index')->with('status', 'Tenant updated');
     }
 
     /**
      * Controller method usage
      */
-    public function destroy(Tenant $tenant): Response
+    public function destroy(Tenant $tenant)
     {
         $tenant->delete();
-        return response(null, 204);
+        return redirect()->route('admin.tenants.index')->with('status', 'Tenant deleted');
     }
 
     /**
      * Controller method usage
      */
-    public function assignToOwner(Tenant $tenant, User $owner): Response
+    public function assignToOwner(Tenant $tenant, User $owner)
     {
         $tenant->house_owner_id = $owner->id;
         $tenant->save();
-        return response($tenant);
+        return redirect()->route('admin.tenants.show', $tenant)->with('status', 'Tenant assigned');
+    }
+
+    /**
+     * Controller method usage
+     */
+    public function create()
+    {
+        return view('admin.tenants.create');
+    }
+
+    /**
+     * Controller method usage
+     */
+    public function edit(Tenant $tenant)
+    {
+        return view('admin.tenants.edit', compact('tenant'));
     }
 }
 

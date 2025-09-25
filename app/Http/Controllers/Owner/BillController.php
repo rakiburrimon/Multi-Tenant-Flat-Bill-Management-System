@@ -12,29 +12,29 @@ class BillController extends Controller
     /**
      * Controller method usage
      */
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         $bills = Bill::query()->forOwner($ownerId)->paginate(20);
-        return response($bills);
+        return view('owner.bills.index', compact('bills'));
     }
 
     /**
      * Controller method usage
      */
-    public function show(Request $request, Bill $bill): Response
+    public function show(Request $request, Bill $bill)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         if ((int)$bill->house_owner_id !== $ownerId) {
             return response(['message' => 'Forbidden'], 403);
         }
-        return response($bill);
+        return view('owner.bills.show', compact('bill'));
     }
 
     /**
      * Controller method usage
      */
-    public function store(Request $request): Response
+    public function store(Request $request)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         $data = $request->validate([
@@ -57,15 +57,14 @@ class BillController extends Controller
             'remarks' => $data['remarks'] ?? null,
         ]);
 
-        // TODO: dispatch email notification for bill creation
-
-        return response($bill, 201);
+        // TODO: email notification
+        return redirect()->route('owner.bills.index')->with('status', 'Bill created');
     }
 
     /**
      * Controller method usage
      */
-    public function pay(Request $request, Bill $bill): Response
+    public function pay(Request $request, Bill $bill)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         if ((int)$bill->house_owner_id !== $ownerId) {
@@ -76,22 +75,52 @@ class BillController extends Controller
         $bill->paid_at = (new \DateTime())->format('Y-m-d H:i:s');
         $bill->save();
 
-        // TODO: dispatch email notification for bill payment
-
-        return response($bill);
+        // TODO: email notification
+        return redirect()->route('owner.bills.show', $bill)->with('status', 'Bill paid');
     }
 
     /**
      * Controller method usage
      */
-    public function destroy(Request $request, Bill $bill): Response
+    public function destroy(Request $request, Bill $bill)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         if ((int)$bill->house_owner_id !== $ownerId) {
             return response(['message' => 'Forbidden'], 403);
         }
         $bill->delete();
-        return response(null, 204);
+        return redirect()->route('owner.bills.index')->with('status', 'Bill deleted');
+    }
+
+    /**
+     * Controller method usage
+     */
+    public function create()
+    {
+        return view('owner.bills.create');
+    }
+
+    /**
+     * Controller method usage
+     */
+    public function edit(Bill $bill)
+    {
+        return view('owner.bills.edit', compact('bill'));
+    }
+
+    /**
+     * Controller method usage
+     */
+    public function update(Request $request, Bill $bill)
+    {
+        $data = $request->validate([
+            'category_id' => ['sometimes', 'integer', 'exists:bill_categories,id'],
+            'amount' => ['sometimes', 'numeric', 'min:0'],
+            'due_date' => ['nullable', 'date'],
+            'remarks' => ['nullable', 'string', 'max:255'],
+        ]);
+        $bill->update($data);
+        return redirect()->route('owner.bills.show', $bill)->with('status', 'Bill updated');
     }
 }
 

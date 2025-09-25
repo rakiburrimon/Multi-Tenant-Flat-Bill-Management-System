@@ -12,29 +12,29 @@ class FlatController extends Controller
     /**
      * Controller method usage
      */
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         $flats = Flat::query()->forOwner($ownerId)->paginate(20);
-        return response($flats);
+        return view('owner.flats.index', compact('flats'));
     }
 
     /**
      * Controller method usage
      */
-    public function show(Request $request, Flat $flat): Response
+    public function show(Request $request, Flat $flat)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         if ((int)$flat->house_owner_id !== $ownerId) {
             return response(['message' => 'Forbidden'], 403);
         }
-        return response($flat);
+        return view('owner.flats.show', compact('flat'));
     }
 
     /**
      * Controller method usage
      */
-    public function store(Request $request): Response
+    public function store(Request $request)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         $data = $request->validate([
@@ -52,13 +52,13 @@ class FlatController extends Controller
             'description' => $data['description'] ?? null,
         ]);
 
-        return response($flat, 201);
+        return redirect()->route('owner.flats.index')->with('status', 'Flat created');
     }
 
     /**
      * Controller method usage
      */
-    public function update(Request $request, Flat $flat): Response
+    public function update(Request $request, Flat $flat)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         if ((int)$flat->house_owner_id !== $ownerId) {
@@ -72,20 +72,36 @@ class FlatController extends Controller
         ]);
 
         $flat->update($data);
-        return response($flat);
+        return redirect()->route('owner.flats.index')->with('status', 'Flat updated');
     }
 
     /**
      * Controller method usage
      */
-    public function destroy(Request $request, Flat $flat): Response
+    public function destroy(Request $request, Flat $flat)
     {
         $ownerId = (int)($request->user()->id ?? 0);
         if ((int)$flat->house_owner_id !== $ownerId) {
             return response(['message' => 'Forbidden'], 403);
         }
         $flat->delete();
-        return response(null, 204);
+        return redirect()->route('owner.flats.index')->with('status', 'Flat deleted');
+    }
+
+    /**
+     * Controller method usage
+     */
+    public function create()
+    {
+        return view('owner.flats.create');
+    }
+
+    /**
+     * Controller method usage
+     */
+    public function edit(Flat $flat)
+    {
+        return view('owner.flats.edit', compact('flat'));
     }
 }
 
