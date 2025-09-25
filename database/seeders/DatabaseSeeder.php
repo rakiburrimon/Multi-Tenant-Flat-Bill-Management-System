@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +13,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Schema::disableForeignKeyConstraints();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Clean tables for idempotent demo seeds
+        DB::table('bills')->truncate();
+        DB::table('tenants')->truncate();
+        DB::table('flats')->truncate();
+        DB::table('buildings')->truncate();
+        DB::table('bill_categories')->truncate();
+        DB::table('users')->truncate();
+
+        Schema::enableForeignKeyConstraints();
+
+        $this->call([
+            UsersTableSeeder::class,
+            BuildingsTableSeeder::class,
+            FlatsTableSeeder::class,
+            TenantsTableSeeder::class,
+            BillCategoriesTableSeeder::class,
+            BillsTableSeeder::class,
         ]);
     }
 }
