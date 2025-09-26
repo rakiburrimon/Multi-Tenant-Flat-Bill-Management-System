@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\Flat;
+use App\Models\Building;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -66,6 +67,7 @@ class FlatController extends Controller
         }
 
         $data = $request->validate([
+            'building_id' => ['sometimes', 'integer', 'exists:buildings,id'],
             'number' => ['sometimes', 'string', 'max:50'],
             'floor' => ['nullable', 'integer'],
             'description' => ['nullable', 'string'],
@@ -91,17 +93,25 @@ class FlatController extends Controller
     /**
      * Controller method usage
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('owner.flats.create');
+        $ownerId = (int)($request->user()->id ?? 0);
+        $buildings = Building::where('house_owner_id', $ownerId)->get();
+        return view('owner.flats.create', compact('buildings'));
     }
 
     /**
      * Controller method usage
      */
-    public function edit(Flat $flat)
+    public function edit(Request $request, Flat $flat)
     {
-        return view('owner.flats.edit', compact('flat'));
+        $ownerId = (int)($request->user()->id ?? 0);
+        if ((int)$flat->house_owner_id !== $ownerId) {
+            return response(['message' => 'Forbidden'], 403);
+        }
+        
+        $buildings = Building::where('house_owner_id', $ownerId)->get();
+        return view('owner.flats.edit', compact('flat', 'buildings'));
     }
 }
 

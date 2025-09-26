@@ -30,6 +30,10 @@
                         <button type="submit" class="btn btn-primary">Login</button>
                     </div>
                 </form>
+                <div class="mt-3 d-flex justify-content-between">
+                    <a href="{{ route('tenant.register') }}">Register as owner</a>
+                    <a href="{{ route('password.request') }}">Forgot password?</a>
+                </div>
             </div>
         </div>
     </div>

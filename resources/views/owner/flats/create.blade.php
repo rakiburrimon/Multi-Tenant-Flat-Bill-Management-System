@@ -5,8 +5,18 @@
 <form method="POST" action="{{ route('owner.flats.store') }}" class="row g-3">
     @csrf
     <div class="col-md-6">
-        <label class="form-label">Building ID</label>
-        <input type="number" name="building_id" class="form-control" required>
+        <label class="form-label">Building</label>
+        <select name="building_id" class="form-select" required>
+            <option value="">Select a building</option>
+            @foreach($buildings as $building)
+                <option value="{{ $building->id }}">
+                    {{ $building->name }} - {{ $building->address }}
+                    @if($building->city)
+                        , {{ $building->city }}
+                    @endif
+                </option>
+            @endforeach
+        </select>
     </div>
     <div class="col-md-6">
         <label class="form-label">Number</label>

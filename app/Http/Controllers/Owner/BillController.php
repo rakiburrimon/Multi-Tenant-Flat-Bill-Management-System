@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bill;
+use App\Models\BillCategory;
+use App\Models\Flat;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -95,17 +98,29 @@ class BillController extends Controller
     /**
      * Controller method usage
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('owner.bills.create');
+        $ownerId = (int)($request->user()->id ?? 0);
+        $categories = BillCategory::all();
+        $flats = Flat::forOwner($ownerId)->with('building')->get();
+        $tenants = Tenant::forOwner($ownerId)->with('flat')->get();
+        return view('owner.bills.create', compact('categories', 'flats', 'tenants'));
     }
 
     /**
      * Controller method usage
      */
-    public function edit(Bill $bill)
+    public function edit(Request $request, Bill $bill)
     {
-        return view('owner.bills.edit', compact('bill'));
+        $ownerId = (int)($request->user()->id ?? 0);
+        if ((int)$bill->house_owner_id !== $ownerId) {
+            return response(['message' => 'Forbidden'], 403);
+        }
+        
+        $categories = BillCategory::all();
+        $flats = Flat::forOwner($ownerId)->with('building')->get();
+        $tenants = Tenant::forOwner($ownerId)->with('flat')->get();
+        return view('owner.bills.edit', compact('bill', 'categories', 'flats', 'tenants'));
     }
 
     /**

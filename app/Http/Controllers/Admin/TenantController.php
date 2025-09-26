@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\Flat;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -60,7 +61,14 @@ class TenantController extends Controller
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
+            'owner_id' => ['sometimes', 'integer', 'exists:users,id'],
+            'flat_id' => ['sometimes', 'integer', 'exists:flats,id'],
         ]);
+
+        if (isset($data['owner_id'])) {
+            $data['house_owner_id'] = $data['owner_id'];
+            unset($data['owner_id']);
+        }
 
         $tenant->update($data);
         return redirect()->route('admin.tenants.index')->with('status', 'Tenant updated');
@@ -90,7 +98,9 @@ class TenantController extends Controller
      */
     public function create()
     {
-        return view('admin.tenants.create');
+        $owners = User::where('role', 'owner')->get();
+        $flats = Flat::with('building')->get();
+        return view('admin.tenants.create', compact('owners', 'flats'));
     }
 
     /**
@@ -98,7 +108,9 @@ class TenantController extends Controller
      */
     public function edit(Tenant $tenant)
     {
-        return view('admin.tenants.edit', compact('tenant'));
+        $owners = User::where('role', 'owner')->get();
+        $flats = Flat::with('building')->get();
+        return view('admin.tenants.edit', compact('tenant', 'owners', 'flats'));
     }
 }
 

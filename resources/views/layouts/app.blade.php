@@ -21,13 +21,15 @@
                     </form>
                 @else
                     <button id="themeToggle" type="button" class="btn btn-outline-light btn-sm me-2" aria-label="Toggle theme">Toggle theme</button>
-                    <a class="btn btn-outline-light btn-sm" href="{{ route('login') }}">Login</a>
+                    <a class="btn btn-outline-light btn-sm me-2" href="{{ route('login') }}">Login</a>
+                    <a class="btn btn-primary btn-sm me-2" href="{{ route('tenant.register') }}">Register as Owner</a>
+                    <a class="btn btn-outline-light btn-sm" href="{{ route('password.request') }}">Forgot password?</a>
                 @endauth
             </div>
         </div>
     </nav>
 
-    @if (request()->routeIs('login'))
+    @if (request()->routeIs('login') || request()->routeIs('tenant.register') || request()->routeIs('password.request') || request()->routeIs('password.reset'))
         <main class="container">
             @if(session('status'))
                 <div class="alert alert-success">{{ session('status') }}</div>

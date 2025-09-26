@@ -6,6 +6,20 @@
     @csrf
     @method('PUT')
     <div class="col-md-6">
+        <label class="form-label">Building</label>
+        <select name="building_id" class="form-select" required>
+            <option value="">Select a building</option>
+            @foreach($buildings as $building)
+                <option value="{{ $building->id }}" {{ $flat->building_id == $building->id ? 'selected' : '' }}>
+                    {{ $building->name }} - {{ $building->address }}
+                    @if($building->city)
+                        , {{ $building->city }}
+                    @endif
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-6">
         <label class="form-label">Number</label>
         <input type="text" name="number" class="form-control" value="{{ $flat->number }}">
     </div>

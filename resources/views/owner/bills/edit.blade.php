@@ -6,8 +6,40 @@
     @csrf
     @method('PUT')
     <div class="col-md-6">
-        <label class="form-label">Category ID</label>
-        <input type="number" name="category_id" class="form-control" value="{{ $bill->category_id }}">
+        <label class="form-label">Flat</label>
+        <select name="flat_id" class="form-select" required>
+            <option value="">Select a flat</option>
+            @foreach($flats as $flat)
+                <option value="{{ $flat->id }}" {{ $bill->flat_id == $flat->id ? 'selected' : '' }}>
+                    {{ $flat->building->name ?? 'Building' }} - Flat {{ $flat->number }}
+                    @if($flat->floor)
+                        (Floor {{ $flat->floor }})
+                    @endif
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Tenant (optional)</label>
+        <select name="tenant_id" class="form-select">
+            <option value="">Select a tenant</option>
+            @foreach($tenants as $tenant)
+                <option value="{{ $tenant->id }}" {{ $bill->tenant_id == $tenant->id ? 'selected' : '' }}>
+                    {{ $tenant->name }} - {{ $tenant->flat->building->name ?? 'Building' }} Flat {{ $tenant->flat->number }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Category</label>
+        <select name="category_id" class="form-select" required>
+            <option value="">Select a category</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}" {{ $bill->category_id == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
     </div>
     <div class="col-md-6">
         <label class="form-label">Amount</label>
