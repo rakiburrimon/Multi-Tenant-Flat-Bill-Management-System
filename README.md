@@ -1,66 +1,389 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Multi-Tenant Flat Bill Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Laravel-based system for managing flat bills across multiple tenants and property owners. This system provides role-based access control with separate interfaces for administrators, property owners, and tenants.
 
-## About Laravel
+## 🚀 Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Multi-tenant Architecture**: Support for multiple property owners and their tenants
+- **Role-based Access Control**: Admin, Owner, and Tenant roles with different permissions
+- **Bill Management**: Create, track, and manage bills for different categories
+- **Flat Management**: Organize properties into buildings and flats
+- **Tenant Management**: Register and manage tenant information
+- **Password Reset**: Secure password reset functionality with custom email templates
+- **Responsive Design**: Modern, mobile-friendly interface with Bootstrap 5
+- **Email Notifications**: Custom email templates for password reset
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📋 Requirements
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.2 or higher
+- Composer
+- SQLite (default) or MySQL/PostgreSQL
+- Node.js and NPM (for frontend assets)
 
-## Learning Laravel
+## 🛠️ Installation & Setup
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Clone the Repository
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+git clone <repository-url>
+cd Multi-Tenant-Flat-Bill-Management-System
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Install Dependencies
 
-## Laravel Sponsors
+```bash
+composer install
+npm install
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 3. Environment Configuration
 
-### Premium Partners
+Copy the example environment file and configure your settings:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```bash
+cp .env.example .env
+```
 
-## Contributing
+Edit the `.env` file with your configuration:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```env
+APP_NAME="Multi-Tenant Flat Bill Management"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
 
-## Code of Conduct
+# Database Configuration (SQLite - Default)
+DB_CONNECTION=sqlite
+DB_DATABASE=database/database.sqlite
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Mail Configuration (for password reset)
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your-email@gmail.com
+MAIL_FROM_NAME="${APP_NAME}"
+```
 
-## Security Vulnerabilities
+### 4. Generate Application Key
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan key:generate
+```
 
-## License
+### 5. Database Setup
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Create the SQLite database file:
+
+```bash
+touch database/database.sqlite
+```
+
+Run migrations to create database tables:
+
+```bash
+php artisan migrate
+```
+
+### 6. Seed Sample Data
+
+Populate the database with sample data:
+
+```bash
+php artisan db:seed
+```
+
+### 7. Build Frontend Assets
+
+```bash
+npm run build
+```
+
+### 8. Start the Development Server
+
+```bash
+php artisan serve
+```
+
+The application will be available at `http://localhost:8000`
+
+## 👥 Default User Credentials
+
+After running the database seeder, you can use these credentials to log in:
+
+### Admin User
+- **Email**: `admin@example.com`
+- **Password**: `password`
+- **Role**: Admin (full system access)
+
+### Property Owners
+- **Email**: `alice.owner@example.com`
+- **Password**: `password`
+- **Role**: Owner
+
+- **Email**: `bob.owner@example.com`
+- **Password**: `password`
+- **Role**: Owner
+
+## 🗄️ Database Structure
+
+### Core Tables
+
+#### Users Table
+- `id` - Primary key
+- `name` - User's full name
+- `email` - Unique email address
+- `password` - Hashed password
+- `role` - User role (admin, owner)
+- `email_verified_at` - Email verification timestamp
+- `remember_token` - Remember me token
+- `created_at`, `updated_at` - Timestamps
+
+#### Buildings Table
+- `id` - Primary key
+- `house_owner_id` - Foreign key to users (property owner)
+- `name` - Building name
+- `address` - Building address
+- `city` - City
+- `postcode` - Postal code
+- `created_at`, `updated_at` - Timestamps
+
+#### Flats Table
+- `id` - Primary key
+- `building_id` - Foreign key to buildings
+- `house_owner_id` - Foreign key to users (property owner)
+- `number` - Flat number/identifier
+- `floor` - Floor number
+- `description` - Flat description
+- `created_at`, `updated_at` - Timestamps
+
+#### Tenants Table
+- `id` - Primary key
+- `house_owner_id` - Foreign key to users (property owner)
+- `flat_id` - Foreign key to flats
+- `name` - Tenant name
+- `email` - Tenant email
+- `phone` - Tenant phone number
+- `lease_start` - Lease start date
+- `lease_end` - Lease end date
+- `created_at`, `updated_at` - Timestamps
+
+#### Bill Categories Table
+- `id` - Primary key
+- `name` - Category name (unique)
+- `description` - Category description
+- `created_at`, `updated_at` - Timestamps
+
+#### Bills Table
+- `id` - Primary key
+- `house_owner_id` - Foreign key to users (property owner)
+- `flat_id` - Foreign key to flats
+- `tenant_id` - Foreign key to tenants (nullable)
+- `category_id` - Foreign key to bill categories
+- `amount` - Bill amount (decimal)
+- `due_date` - Due date
+- `status` - Bill status (unpaid, paid, overdue)
+- `paid_at` - Payment timestamp
+- `remarks` - Additional remarks
+- `created_at`, `updated_at` - Timestamps
+
+### Relationships
+
+- **Users** → **Buildings** (One-to-Many)
+- **Buildings** → **Flats** (One-to-Many)
+- **Users** → **Flats** (One-to-Many, through buildings)
+- **Flats** → **Tenants** (One-to-Many)
+- **Users** → **Tenants** (One-to-Many, through flats)
+- **Bill Categories** → **Bills** (One-to-Many)
+- **Flats** → **Bills** (One-to-Many)
+- **Tenants** → **Bills** (One-to-Many)
+
+## 🎯 User Roles & Permissions
+
+### Admin Role
+- Full system access
+- Manage all property owners
+- Manage all tenants
+- View all buildings, flats, and bills
+- System administration functions
+
+### Owner Role
+- Manage their own buildings and flats
+- Manage tenants in their properties
+- Create and manage bills for their properties
+- View their own data only
+
+### Tenant Role (Future Enhancement)
+- View their own bills
+- Update personal information
+- Payment tracking
+
+## 🔧 Configuration
+
+### Mail Configuration
+
+For password reset functionality, configure your mail settings in `.env`:
+
+#### Gmail Configuration
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_ENCRYPTION=tls
+```
+
+**Note**: For Gmail, you need to:
+1. Enable 2-factor authentication
+2. Generate an "App Password"
+3. Use the app password (not your regular password)
+
+#### Alternative Mail Services
+- **Mailtrap** (for testing)
+- **SendGrid**
+- **Mailgun**
+- **Amazon SES**
+
+### Database Configuration
+
+#### SQLite (Default)
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=database/database.sqlite
+```
+
+#### MySQL
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=flat_bill_management
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+#### PostgreSQL
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=flat_bill_management
+DB_USERNAME=postgres
+DB_PASSWORD=
+```
+
+## 🚀 Usage Guide
+
+### 1. Admin Access
+- Login with admin credentials
+- Navigate to "Owners" to manage property owners
+- Navigate to "Tenants" to manage all tenants
+- View system-wide statistics and reports
+
+### 2. Owner Registration
+- Visit `/register/tenant` (despite the URL, this registers owners)
+- Fill in the registration form
+- Login with new credentials
+
+### 3. Owner Dashboard
+- Login as an owner
+- Navigate to "Flats" to manage your properties
+- Navigate to "Bills" to create and manage bills
+- Navigate to "Categories" to manage bill categories
+
+### 4. Password Reset
+- Visit `/forgot-password`
+- Enter your email address
+- Check your email for the reset link
+- Follow the link to reset your password
+
+## 📁 Project Structure
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Admin/          # Admin-specific controllers
+│   │   ├── Owner/          # Owner-specific controllers
+│   │   ├── AuthController.php
+│   │   └── TenantRegistrationController.php
+│   └── Middleware/
+│       └── CheckRole.php   # Role-based access control
+├── Models/                 # Eloquent models
+├── Notifications/          # Email notifications
+└── Providers/
+
+database/
+├── migrations/             # Database schema migrations
+├── seeders/               # Sample data seeders
+└── factories/             # Model factories
+
+resources/
+├── views/
+│   ├── admin/             # Admin interface views
+│   ├── auth/              # Authentication views
+│   ├── owner/             # Owner interface views
+│   └── layouts/           # Layout templates
+└── css/                   # Stylesheets
+
+routes/
+├── web.php                # Main web routes
+├── web_admin.php          # Admin routes
+└── web_owner.php          # Owner routes
+```
+
+## 🔒 Security Features
+
+- **Password Hashing**: Bcrypt encryption for all passwords
+- **CSRF Protection**: Laravel's built-in CSRF protection
+- **Role-based Access**: Middleware-based role checking
+- **Input Validation**: Server-side validation for all forms
+- **SQL Injection Protection**: Eloquent ORM prevents SQL injection
+- **XSS Protection**: Blade templating engine escapes output
+
+## 🧪 Testing
+
+Run the test suite:
+
+```bash
+php artisan test
+```
+
+## 📝 API Documentation
+
+The system currently uses traditional web routes. Future versions may include API endpoints for mobile applications.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## 🆘 Support
+
+For support and questions:
+- Check the Laravel documentation: https://laravel.com/docs
+- Review the code comments and inline documentation
+- Create an issue in the repository
+
+## 🔄 Version History
+
+- **v1.0.0** - Initial release with basic functionality
+  - Multi-tenant architecture
+  - Role-based access control
+  - Bill management system
+  - Password reset functionality
+  - Responsive design
+
+---
+
+**Built with ❤️ using Laravel Framework**
