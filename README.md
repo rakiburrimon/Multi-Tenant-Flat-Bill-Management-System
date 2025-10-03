@@ -2,6 +2,22 @@
 
 A comprehensive Laravel-based system for managing flat bills across multiple tenants and property owners. This system provides role-based access control with separate interfaces for administrators, property owners, and tenants.
 
+## 🌐 Live Demo
+
+- Demo: [multi-tenant-rimon.infinityfreeapp.com](https://multi-tenant-rimon.infinityfreeapp.com/)
+
+Use the credentials below to explore the demo:
+
+- Admin
+  - Email: `admin@example.com`
+  - Password: `password`
+- Owner
+  - Email: `alice.owner@example.com`
+  - Password: `password`
+- Owner
+  - Email: `bob.owner@example.com`
+  - Password: `password`
+
 ## 🚀 Features
 
 - **Multi-tenant Architecture**: Support for multiple property owners and their tenants
